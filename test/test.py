@@ -90,22 +90,22 @@ def main():
     def plotter(circles):
         plot_circles(grid_ori, circles)
         plt.draw()
-        raw_input('continue?')
+        eval(input('continue?'))
     set_plot(explorer)
 
     print('Begin?')
-    map(explorer.exploring, [None])  # compile jit
+    list(map(explorer.exploring, [None]))  # compile jit
     times = 1  # 100
     past = time.time()
-    result = map(explorer.exploring, [None]*times)
+    result = list(map(explorer.exploring, [None]*times))
     now = time.time()
-    print('Runtime: {} ms (mean of {} times)'.format(np.round((now - past) / times, 4) * 1000, times))
-    print('Done' if sum(result) else 'Find No Path')
+    print(('Runtime: {} ms (mean of {} times)'.format(np.round((now - past) / times, 4) * 1000, times)))
+    print(('Done' if sum(result) else 'Find No Path'))
 
     plot_circles(grid_ori, explorer.circle_path)
     np.savetxt('{}/{}_ose.txt'.format(filepath, seq), explorer.path(), delimiter=',')
     plt.draw()
-    raw_input('Plotting')
+    eval(input('Plotting'))
 
 
 if __name__ == '__main__':

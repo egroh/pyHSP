@@ -95,7 +95,7 @@ class OrientationSpaceExplorer(object):
         :param expansion: expansion is a set in which items are unordered.
         :param open_set: we define the open set as a set in which items are sorted from Large to Small by cost.
         """
-        open_set.extend(zip(map(lambda x: x.f, expansion), expansion))
+        open_set.extend(list(zip([x.f for x in expansion], expansion)))
         open_set.sort(reverse=True)
 
     @staticmethod
@@ -157,7 +157,7 @@ class OrientationSpaceExplorer(object):
         children = self.jit_children(
             neighbors, (self.grid_ori.x, self.grid_ori.y, self.grid_ori.a), self.grid_pad, self.grid_map, self.grid_res,
             self.maximum_radius, self.minimum_radius, self.minimum_clearance, self.obstacle)
-        return map(buildup, children)
+        return list(map(buildup, children))
 
     @staticmethod
     @njit
@@ -199,7 +199,7 @@ class OrientationSpaceExplorer(object):
             return x1, y1, a1
         neighbors = numba.typed.List()
         neighbors.append((0., 0., 0.)), neighbors.pop()
-        for n in np.radians(np.linspace(-90, 90, number / 2)):
+        for n in np.radians(np.linspace(-90, 90, number // 2)):
             neighbor = (radius * np.cos(n), radius * np.sin(n), n)
             opposite = (radius * np.cos(n + np.pi), radius * np.sin(n + np.pi), n)
             neighbor = lcs2gcs(neighbor)
@@ -286,5 +286,11 @@ class OrientationSpaceExplorer(object):
             self.x, self.y, self.a = x, y, a
             return self
 
+        def __lt__(self, other):
+            """
+            Compares two circle nodes
+            :param other: the circle-node to compare against.
+            """
+            return self.g < other.g
     # define the deferred type
     # circle_node.define(CircleNode.class_type.instance_type)
