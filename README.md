@@ -1,47 +1,48 @@
-# Heurisp
-*(What is it)* A repository of **Python2** implemented **H**euristics for **S**ampling-based **P**ath (Motion) Planner **(HSP)**. 
+![pyHSP logo](assets/pyHSP_logo.png)
 
-Currently, it includes these heuristics:
+*Orientation‑Aware Space Exploration for autonomous‑vehicle motion planning*
 
-1. Orientation-Aware Space Exploration (OSE, referred to [^1]). It is one of the state-of-the-art heuristics according to [^2].
+pyHSP is a **Python 3** implementation of the Orientation‑Aware Space
+Exploration (**OSE**) planner — a circle‑expansion Hybrid A* algorithm
+for curvature‑bounded vehicles.
+This repository hosts the original prototype that,
+after a full redesign, evolved into the global path‑planner powering the TUfast Eco‑Team
+autonomous prototype vehicles **muc022** and **muc023**.
+
+This repository is built upon the Python 2 code by [Gabel Liemann](https://github.com/liespace/pyHSP),
+which implemented the Orientation-Aware Space Exploration planner described in [^1] and referenced in [^2].
 
 
+## Features
 
-## How to use
+- 🧭 **OSE algorithm** – orientation‑aware Hybrid A* with circle templates.
+- ⚡ **Numba‑accelerated kernels** – fast clearance and neighbour generation.
+- 🖼️ **Built‑in visualiser** – Matplotlib demo scenes under `tests/`.
+- 🐍 **Modern Python 3.12** – PEP484 typing, docstrings, `black` formatted.
+- ✅ **Regression tests** – quick end‑to‑end checks.
 
-- **Orientation-Aware Space Exploration** (Details included in ```test/test.py```)
+## Examples
 
-```python
-from heurisp import OrientationSpaceExplorer as OSExplorer
-# see test directory for details to set arguments.
-explorer = OSExplorer()
-explorer.initialize(start, goal, grid_map, grid_res, grid_ori)
-explorer.exploring()
+| ![](assets/0_ose.png) | ![](assets/20_ose.png) | ![](assets/40_ose.png) | ![](assets/85_ose.png) |
+|---|---|---|---|
+
+> Result images generated with `tests/test_driver.py`.
+
+
+## Quick Start
+
+```bash
+# clone & install in editable mode
+git clone https://github.com/<your‑org>/pyHSP.git
+cd pyHSP
+pip install -e .
+
+# run the demo visualiser
+python tests/test.py --show
 ```
 
 
-## How to install
-
-- **PyPI**
-
-```shell script
-$ pip2 install heurisp
-```
-- **From source**
-
-```shell script
-$ git clone https://github.com/liespace/pyHSP.git
-$ cd pyHSP
-$ python setup.py sdist
-# install
-$ pip install heurisp -f dist/* --no-cache-dir
-# or upload yours
-# $ twine upload dist/*
-```
-
-
-
-## Reference
+## References
 
 [^1]: Chen, Chao, Markus Rickert, and Alois Knoll. "Path planning with orientation-aware space exploration guided heuristic search for autonomous parking and maneuvering." 2015 IEEE Intelligent Vehicles Symposium (IV). IEEE, 2015.
 
