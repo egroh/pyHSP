@@ -1,7 +1,25 @@
 import numba
 from numba import njit
 import numpy as np
-import reeds_shepp
+import rsplan
+
+def path_length(q0, q1, radius: float, _step: float = 0.1) -> float:
+    """
+    Calculate the length of a Reeds-Shepp path between two configurations.
+    (Uses rsplan library, called from Python code).
+
+    Args:
+        q0: Start configuration (x, y, angle) in GCS.
+        q1: Goal configuration (x, y, angle) in GCS.
+        radius: Turning radius.
+        _step: Step size used internally by rsplan for path discretization (default 0.1).
+
+    Returns:
+        The length of the Reeds-Shepp path, or np.inf if no path exists.
+    """
+    # rsplan.path can return None if no path exists
+    path = rsplan.path(q0, q1, radius, 0, _step)
+    return path.total_length if path else np.inf
 
 
 class OrientationSpaceExplorer(object):
@@ -83,7 +101,7 @@ class OrientationSpaceExplorer(object):
                                constant_values=((self.obstacle, self.obstacle), (self.obstacle, self.obstacle)))
         # complete the start and goal
         self.start.r, self.start.g = self.clearance(self.start) - self.minimum_clearance, 0
-        self.start.h = reeds_shepp.path_length(
+        self.start.h = path_length(
             (start.x, start.y, start.a), (self.goal.x, self.goal.y, self.goal.a), 1. / self.maximum_curvature)
         self.goal.r, self.goal.h, self.goal.g = self.clearance(self.goal) - self.minimum_clearance, 0, np.inf
         self.start.f, self.goal.f = self.start.g + self.start.h, self.goal.g + self.goal.h
@@ -145,9 +163,9 @@ class OrientationSpaceExplorer(object):
             # build the child
             child.set_parent(circle)
             # child.h = self.distance(child, self.goal)
-            child.h = reeds_shepp.path_length(
+            child.h = path_length(
                 (child.x, child.y, child.a), (self.goal.x, self.goal.y, self.goal.a), 1. / self.maximum_curvature)
-            child.g = circle.g + reeds_shepp.path_length(
+            child.g = circle.g + path_length(
                 (circle.x, circle.y, circle.a), (child.x, child.y, child.a), 1. / self.maximum_curvature)
             child.f = child.g + child.h
             # add the child to expansion set

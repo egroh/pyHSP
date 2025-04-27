@@ -15,9 +15,10 @@ setuptools.setup(
     url='https://github.com/liespace/pyHSP',
     license='MIT',
     install_requires=[
-        'numpy',
-        'numba',
-        'reeds_shepp',
+        'numpy>=1.26,<2',
+        'numba>=0.57,<0.61',
+        'bottleneck>=1.3.8 ',
+        'rsplan>=1.0',
         'matplotlib',
         'opencv-python',
         'scipy'],

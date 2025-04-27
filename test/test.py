@@ -76,7 +76,7 @@ def set_plot(explorer):
 
 def main():
     # preset
-    filepath, seq = './test_scenes', 0
+    filepath, seq = './test_scenes', 1
     source, target = read_task(filepath, seq)
     # transform coordinate from GCS to LCS.
     start = center2rear(deepcopy(source)).gcs2lcs(source)  # coordinate of rear track center on start state in LCS
@@ -89,11 +89,9 @@ def main():
 
     def plotter(circles):
         plot_circles(grid_ori, circles)
-        plt.draw()
-        eval(input('continue?'))
+        plt.show()
     set_plot(explorer)
 
-    print('Begin?')
     list(map(explorer.exploring, [None]))  # compile jit
     times = 1  # 100
     past = time.time()
@@ -104,8 +102,8 @@ def main():
 
     plot_circles(grid_ori, explorer.circle_path)
     np.savetxt('{}/{}_ose.txt'.format(filepath, seq), explorer.path(), delimiter=',')
-    plt.draw()
-    eval(input('Plotting'))
+    plt.savefig(fname='{}/{}_ose.png'.format(filepath, seq))
+    plt.show()
 
 
 if __name__ == '__main__':
